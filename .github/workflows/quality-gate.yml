@@ -71,6 +71,7 @@ jobs:
 
           print("Encoding check passed.")
           PY
+
   secret-check:
     name: secret-check
     runs-on: [self-hosted, linux, x64, quality]
@@ -84,5 +85,21 @@ jobs:
         run: |
           docker run --rm \
             -v "$PWD:/repo" \
-            zricethezav/gitleaks:latest \
+            zricethezav/gitleaks:v8.24.2 \
             detect --source /repo --no-git --verbose
+
+  sast-check:
+    name: sast-check
+    runs-on: [self-hosted, linux, x64, quality]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            semgrep/semgrep:1.125.0 \
+            semgrep scan --config auto --error /src
