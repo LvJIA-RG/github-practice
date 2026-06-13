@@ -71,3 +71,18 @@ jobs:
 
           print("Encoding check passed.")
           PY
+  secret-check:
+    name: secret-check
+    runs-on: [self-hosted, linux, x64, quality]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        shell: bash
+        run: |
+          docker run --rm \
+            -v "$PWD:/repo" \
+            zricethezav/gitleaks:latest \
+            detect --source /repo --no-git --verbose
