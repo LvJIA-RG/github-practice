@@ -1,0 +1,29 @@
+name: self-hosted-smoke
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  smoke:
+    name: self-hosted-runner-smoke
+    runs-on: [self-hosted, linux, x64, quality]
+
+    steps:
+      - name: Show runner info
+        run: |
+          echo "runner_name=${RUNNER_NAME}"
+          echo "runner_os=${RUNNER_OS}"
+          echo "hostname=$(hostname)"
+          echo "pwd=$(pwd)"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Confirm repo
+        run: |
+          git remote -v
+          git rev-parse --show-toplevel
